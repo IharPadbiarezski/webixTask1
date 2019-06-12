@@ -8,6 +8,13 @@
     <link rel="stylesheet" type="text/css" href="http://cdn.webix.com/edge/webix.css">
     <title>Webix | Task 1</title>
     <style>
+        .header--bg_color {
+            background-color: rgb(59, 63, 62);
+        }
+
+        .label {
+            color: #fff;
+        }
         .footer__description {
             text-align: center;
         }
@@ -22,16 +29,17 @@
             view:"toolbar",
             height: 70,
             paddingX: 15,
+            css: "header--bg_color",
             elements: [
-                { view:"label", label:"<span class='myCss'>My App</span>"},
+                { view:"label", label:"<span class='label'>My App</span>"},
                 {},
-                { view: "icon", icon: "envelope"},
+                { view: "icon", icon: "fas fa-envelope"},
                 { view:"button", 
                     id:"profile_button",
                     value:"Profile",
-                // type:"icon",
-                // icon:"wxi-envelope",
-                 }
+                    type:"icon",
+                    icon:"fas fa-pencil",
+                 },
             ]
         }
 
@@ -72,7 +80,7 @@
                 { view:"text", name:"votes", label: "Votes"},
 
                 { cols:[
-                        { view:"button", value:"Add New"},
+                        { view:"button", css: "webix_primary", value:"Add New"},
                         { view:"button", value:"Clear"}
                     ]
                 }
