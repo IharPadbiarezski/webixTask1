@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="http://cdn.webix.com/edge/webix.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.webix.com/edge/webix.css">
+    <title>Webix | Task 1</title>
+</head>
+<body>
+    <script type="text/javascript" charset="utf-8">
+    
+        webix.ui({
+    rows:[
+        { view:"template", template:"Row 1"},
+        { 
+            cols: [{view:"template", template:"Col 1"},{view:"template", template:"Col 2"},{view:"template", template:"Col 3"}]
+        },
+        {view:"template", template:"Row 3"}
+    ]
+
+        });
+      
+      </script>
+</body>
+</html>
