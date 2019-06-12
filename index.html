@@ -7,19 +7,64 @@
     <script type="text/javascript" src="http://cdn.webix.com/edge/webix.js"></script>
     <link rel="stylesheet" type="text/css" href="http://cdn.webix.com/edge/webix.css">
     <title>Webix | Task 1</title>
+    <style>
+        .footer__description {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    
     <script type="text/javascript" charset="utf-8">
+
+        let header = {
+            height: 70,
+            view:"template",
+            template:"Row 1"
+        }
+
+        let navigation = {
+            gravity: 1,
+            view:"template",
+            template:"Col 1"
+        }
+
+        let resizer = {view: "resizer"}
+
+        let moviesTable = {
+            gravity: 3,
+            view:"template",
+            template:"Col 2"
+        }
+
+        let form = {
+            gravity: 1.5, 
+            view:"template",
+            template:"Col 3"
+        }
+
+        let footer = {
+            id:"footer",
+            height: 60,
+            css: "footer__description",
+            view:"template",
+            template:"<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
+        }
     
         webix.ui({
-    rows:[
-        { view:"template", template:"Row 1"},
-        { 
-            cols: [{view:"template", template:"Col 1"},{view:"template", template:"Col 2"},{view:"template", template:"Col 3"}]
-        },
-        {view:"template", template:"Row 3"}
-    ]
-
+        rows:
+            [
+             header,
+            { 
+            cols: [
+                navigation,
+                resizer,
+                moviesTable,
+                form
+                ]
+            },
+            footer
+            ]
         });
       
       </script>
