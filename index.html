@@ -21,11 +21,17 @@
         let header = {
             view:"toolbar",
             height: 70,
+            paddingX: 15,
             elements: [
-                { view: "template", template: "My App", borderless:true  },
+                { view:"label", label:"<span class='myCss'>My App</span>"},
                 {},
-                { view:"icon", icon:"fas fa-envelope" },
-                { view: "template", template: "Profile", borderless:true }
+                { view: "icon", icon: "envelope"},
+                { view:"button", 
+                    id:"profile_button",
+                    value:"Profile",
+                // type:"icon",
+                // icon:"wxi-envelope",
+                 }
             ]
         }
 
