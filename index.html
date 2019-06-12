@@ -15,32 +15,63 @@
 </head>
 <body>
     
-    <script type="text/javascript" charset="utf-8">
+    <script type="module" charset="utf-8">
+        import { small_film_set } from './testdata.js';
 
         let header = {
+            view:"toolbar",
             height: 70,
-            view:"template",
-            template:"Row 1"
+            elements: [
+                { view: "template", template: "My App", borderless:true  },
+                {},
+                { view:"icon", icon:"fas fa-envelope" },
+                { view: "template", template: "Profile", borderless:true }
+            ]
         }
 
-        let navigation = {
-            gravity: 1,
-            view:"template",
-            template:"Col 1"
+        let side = {
+            rows: [
+                {   view:"list",
+                    gravity: 1,
+                    autoheight: true,
+                    data: ["Dashboard", "Users", "Products", "Locations" ] },
+                {},
+                { 
+                    cols: [
+                    { view:"icon", icon:"fas fa-envelope" },
+                    { view: "template", template: "Connected" }
+                ]}
+            ]   
         }
 
         let resizer = {view: "resizer"}
 
         let moviesTable = {
+            view:"datatable",
             gravity: 3,
-            view:"template",
-            template:"Col 2"
+            scroll: "y",
+            autoConfig: true,
+            data: small_film_set
         }
 
         let form = {
-            gravity: 1.5, 
-            view:"template",
-            template:"Col 3"
+            gravity: 1.5,
+            view: "toolbar",
+            rows: [{
+            view:"form",
+            elements:[
+                { view:"text", name:"title", label: "Title"},
+                { view:"text", name:"Year", label: "Year"},
+                { view:"text", name:"rating", label: "Rating"},
+                { view:"text", name:"votes", label: "Votes"},
+
+                { cols:[
+                        { view:"button", value:"Add New"},
+                        { view:"button", value:"Clear"}
+                    ]
+                }
+            ]
+        }]
         }
 
         let footer = {
@@ -57,7 +88,7 @@
              header,
             { 
             cols: [
-                navigation,
+                side,
                 resizer,
                 moviesTable,
                 form
