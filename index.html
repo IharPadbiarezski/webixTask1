@@ -35,6 +35,11 @@
             border-bottom: none;
         }
 
+        .connected {
+            text-align: center;
+            color: green;
+        }
+
         .footer__description {
             text-align: center;
         }
@@ -68,11 +73,7 @@
                     data: ["Dashboard", "Users", "Products", "Locations" ]
                 },
                 {},
-                { 
-                    cols: [
-                    { view:"icon", icon:"fas fa-envelope" },
-                    { view: "template", template: "Connected" }
-                ]}
+                { view: "template", height: 50, css: "connected", borderless: true, template: "<p><span class='webix_icon wxi-check'></span> Connected</p>" }
             ]   
         }
 
