@@ -6,15 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script type="text/javascript" src="http://cdn.webix.com/edge/webix.js"></script>
     <link rel="stylesheet" type="text/css" href="http://cdn.webix.com/edge/webix.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.materialdesignicons.com/2.7.94/css/materialdesignicons.css">
     <title>Webix | Task 1</title>
     <style>
         .header--bg_color {
             background-color: rgb(59, 63, 62);
         }
+        
+        .webix_el_button.webix_custom button, .webix_el_toggle.webix_custom button {
+            background: none;
+            color: #FFF;
+        }
+
+        .webix_el_button.webix_custom button:hover, .webix_el_toggle.webix_custom button:hover {
+            background: none;
+            color: #FFF;
+        }
 
         .label {
             color: #fff;
         }
+
+        .side, .side > div {
+            background-color: rgb(196, 195, 195);
+        }
+
         .footer__description {
             text-align: center;
         }
@@ -33,22 +49,20 @@
             elements: [
                 { view:"label", label:"<span class='label'>My App</span>"},
                 {},
-                { view: "icon", icon: "fas fa-envelope"},
-                { view:"button", 
-                    id:"profile_button",
-                    value:"Profile",
-                    type:"icon",
-                    icon:"fas fa-pencil",
-                 },
+                {view: "button", type: "icon", icon: "mdi mdi-account", css:"webix_primary webix_custom", maxWidth:150, label: "Profile"}
             ]
         }
 
         let side = {
+            css: "side",
             rows: [
-                {   view:"list",
+                {   
+                    view:"list",
+                    borderless:true,
                     gravity: 1,
                     autoheight: true,
-                    data: ["Dashboard", "Users", "Products", "Locations" ] },
+                    data: ["Dashboard", "Users", "Products", "Locations" ]
+                },
                 {},
                 { 
                     cols: [
@@ -68,22 +82,31 @@
             data: small_film_set
         }
 
+        let fields = [
+            { view:"text", name:"title", label: "Title"},
+            { view:"text", name:"Year", label: "Year"},
+            { view:"text", name:"rating", label: "Rating"},
+            { view:"text", name:"votes", label: "Votes"}       
+        ];
+
+        let buttons = [
+            { view:"button", css: "webix_primary", value:"Add New"},
+            { view:"button", value:"Clear"}
+        ]
+
         let form = {
-            gravity: 1.5,
             view: "toolbar",
+            borderless:true,
+            gravity: 1.5,
             rows: [{
             view:"form",
             elements:[
-                { view:"text", name:"title", label: "Title"},
-                { view:"text", name:"Year", label: "Year"},
-                { view:"text", name:"rating", label: "Rating"},
-                { view:"text", name:"votes", label: "Votes"},
-
-                { cols:[
-                        { view:"button", css: "webix_primary", value:"Add New"},
-                        { view:"button", value:"Clear"}
-                    ]
-                }
+            { view:"fieldset", label:"Edit Films", body: {
+                rows: webix.copy(fields)
+            }},
+            {   margin: "20",
+                cols: webix.copy(buttons)
+            }  
             ]
         }]
         }
