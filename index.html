@@ -82,13 +82,19 @@
 
         let moviesTable = {
             view: 'datatable',
+            id: 'movies_table',
             gravity: 3,
             scroll: 'y',
             autoConfig: true,
             data: small_film_set
         };
 
-        let buttons = [ { view: 'button', css: 'webix_primary', value: 'Add New' }, { view: 'button', value: 'Clear' } ];
+        let buttons = [ { view: 'button', css: 'webix_primary', value: 'Add New', click:function(){
+      
+          var item = $$("movies_form").getValues();
+          $$("movies_table").add(item);
+      
+    } }, { view: 'button', value: 'Clear' } ];
 
         let form = {
             view: 'toolbar',
@@ -96,11 +102,12 @@
             rows: [
                 {
                     view: 'form',
+                    id: 'movies_form',
                     borderless: true,
                     elements: [
                         { type: 'section', template: 'Icon buttons', borderless: true },
                         { view: 'text', name: 'title', label: 'Title' },
-                        { view: 'text', name: 'Year', label: 'Year' },
+                        { view: 'text', name: 'year', label: 'Year' },
                         { view: 'text', name: 'rating', label: 'Rating' },
                         { view: 'text', name: 'votes', label: 'Votes' },
                         { margin: '20', cols: webix.copy(buttons) }
