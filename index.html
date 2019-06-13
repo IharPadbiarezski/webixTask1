@@ -82,13 +82,6 @@
             data: small_film_set
         }
 
-        let fields = [
-            { view:"text", name:"title", label: "Title"},
-            { view:"text", name:"Year", label: "Year"},
-            { view:"text", name:"rating", label: "Rating"},
-            { view:"text", name:"votes", label: "Votes"}       
-        ];
-
         let buttons = [
             { view:"button", css: "webix_primary", value:"Add New"},
             { view:"button", value:"Clear"}
@@ -99,16 +92,16 @@
             borderless:true,
             gravity: 1.5,
             rows: [{
-            view:"form",
-            elements:[
-            { view:"fieldset", label:"Edit Films", body: {
-                rows: webix.copy(fields)
-            }},
-            {   margin: "20",
-                cols: webix.copy(buttons)
-            }  
-            ]
-        }]
+                view:"form",
+                elements:[
+                    { type:"section", template:"Icon buttons", borderless:true },
+                    { view:"text", name:"title", label: "Title"},
+                    { view:"text", name:"Year", label: "Year"},
+                    { view:"text", name:"rating", label: "Rating"},
+                    { view:"text", name:"votes", label: "Votes"},
+                    { margin: "20", cols: webix.copy(buttons)}  
+                ]
+            }]
         }
 
         let footer = {
