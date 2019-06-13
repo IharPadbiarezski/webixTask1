@@ -121,10 +121,15 @@
                     borderless: true,
                     elements: [
                         { type: 'section', template: 'Icon buttons', borderless: true },
-                        { view: 'text', name: 'title', label: 'Title' },
-                        { view: 'text', name: 'year', label: 'Year' },
-                        { view: 'text', name: 'rating', label: 'Rating' },
-                        { view: 'text', name: 'votes', label: 'Votes' },
+                        { view: 'text', name: 'title', label: 'Title', invalidMessage: 'Please, enter the name of a movie' },
+                        {
+                            view: 'text',
+                            name: 'year',
+                            label: 'Year',
+                            invalidMessage: 'Enter year should be between 1970 and current year'
+                        },
+                        { view: 'text', name: 'rating', label: 'Rating', invalidMessage: 'Enter rating can not be empty or 0' },
+                        { view: 'text', name: 'votes', label: 'Votes', invalidMessage: 'Enter vote must be less than 100000' },
                         { margin: '20', cols: webix.copy(buttons) }
                     ],
                     rules: {
@@ -135,7 +140,7 @@
                         },
                         votes: function(value) {
                             if (value !== '') {
-                                return value < 10000;
+                                return value < 100000;
                             }
                             return false;
                         },
