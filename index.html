@@ -9,19 +9,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.materialdesignicons.com/2.7.94/css/materialdesignicons.css">
     <title>Webix | Task 1</title>
     <style>
-        .header--bg_color {
-            background-color: #657483;
+        .webix_toolbar.webix_dark .webix_secondary button {
+            background: none;
         }
         
-        .webix_el_button.webix_custom button, .webix_el_toggle.webix_custom button {
-            background: none;
-            color: #FFF;
-        }
-
-        .webix_el_button.webix_custom button:hover, .webix_el_toggle.webix_custom button:hover {
-            background: none;
-            color: #FFF;
-        }
 
         .label {
             color: #fff;
@@ -29,10 +20,6 @@
 
         .side, .side > div {
             background-color: #EEEEEE;
-        }
-
-        .webix_list_item {
-            border-bottom: none;
         }
 
         .connected {
@@ -51,88 +38,88 @@
         import { small_film_set } from './testdata.js';
 
         let header = {
-            view:"toolbar",
+            view: 'toolbar',
             height: 70,
+            css: 'webix_dark',
             paddingX: 15,
-            css: "header--bg_color",
             elements: [
-                { view:"label", label:"<span class='label'>My App</span>"},
+                { view: 'label', label: "<span class='label'>My App</span>" },
                 {},
-                {view: "button", type: "icon", icon: "mdi mdi-account", css:"webix_primary webix_custom", maxWidth:150, label: "Profile"}
+                { view: 'button', type: 'icon', icon: 'mdi mdi-account', maxWidth: 150, label: 'Profile' }
             ]
-        }
+        };
 
         let side = {
-            css: "side",
+            css: 'side',
             rows: [
-                {   
-                    view:"list",
-                    borderless:true,
-                    gravity: 1,
+                {
+                    view: 'list',
+                    borderless: true,
                     autoheight: true,
-                    data: ["Dashboard", "Users", "Products", "Locations" ]
+                    type: 'clean',
+                    data: [ 'Dashboard', 'Users', 'Products', 'Locations' ]
                 },
                 {},
-                { view: "template", height: 50, css: "connected", borderless: true, template: "<p><span class='webix_icon wxi-check'></span> Connected</p>" }
-            ]   
-        }
+                {
+                    view: 'template',
+                    height: 50,
+                    css: 'connected',
+                    borderless: true,
+                    template: "<p><span class='webix_icon wxi-check'></span> Connected</p>"
+                }
+            ]
+        };
 
-        let resizer = {view: "resizer"}
+        let resizer = { view: 'resizer' };
 
         let moviesTable = {
-            view:"datatable",
+            view: 'datatable',
             gravity: 3,
-            scroll: "y",
+            scroll: 'y',
             autoConfig: true,
             data: small_film_set
-        }
+        };
 
-        let buttons = [
-            { view:"button", css: "webix_primary", value:"Add New"},
-            { view:"button", value:"Clear"}
-        ]
+        let buttons = [ { view: 'button', css: 'webix_primary', value: 'Add New' }, { view: 'button', value: 'Clear' } ];
 
         let form = {
-            view: "toolbar",
+            view: 'toolbar',
             gravity: 1.5,
-            rows: [{
-                view:"form",
-                borderless: true,
-                elements:[
-                    { type:"section", template:"Icon buttons", borderless:true },
-                    { view:"text", name:"title", label: "Title"},
-                    { view:"text", name:"Year", label: "Year"},
-                    { view:"text", name:"rating", label: "Rating"},
-                    { view:"text", name:"votes", label: "Votes"},
-                    { margin: "20", cols: webix.copy(buttons)}  
-                ]
-            }]
-        }
+            rows: [
+                {
+                    view: 'form',
+                    borderless: true,
+                    elements: [
+                        { type: 'section', template: 'Icon buttons', borderless: true },
+                        { view: 'text', name: 'title', label: 'Title' },
+                        { view: 'text', name: 'Year', label: 'Year' },
+                        { view: 'text', name: 'rating', label: 'Rating' },
+                        { view: 'text', name: 'votes', label: 'Votes' },
+                        { margin: '20', cols: webix.copy(buttons) }
+                    ]
+                }
+            ]
+        };
 
         let footer = {
-            id:"footer",
+            id: 'footer',
             height: 60,
-            css: "footer__description",
-            view:"template",
-            template:"<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
-        }
-    
+            css: 'footer__description',
+            view: 'template',
+            template:
+                "<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
+        };
+
         webix.ui({
-        rows:
-            [
-             header,
-            { 
-            cols: [
-                side,
-                resizer,
-                moviesTable,
-                form
-                ]
-            },
-            footer
+            rows: [
+                header,
+                {
+                    cols: [ side, resizer, moviesTable, form ]
+                },
+                footer
             ]
         });
-      
+
       </script>
 </body>
 </html>
