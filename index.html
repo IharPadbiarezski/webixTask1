@@ -106,7 +106,16 @@
                 view: 'button',
                 value: 'Clear',
                 click: function() {
-                    $$('movies_form').clear();
+                    webix.confirm({
+                        text:"Are you sure you want to clean the form?"
+                    }).then(
+                        function(){
+                            $$('movies_form').clear();
+                        }, 
+                        function(){
+                            webix.message("Rejected");
+                        }
+                    );
                 }
             }
         ];
