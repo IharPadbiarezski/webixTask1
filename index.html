@@ -98,11 +98,17 @@
                     if ($$('movies_form').validate()) {
                         var item = $$('movies_form').getValues();
                         $$('movies_table').add(item);
-                        webix.message({type:"success", text: "The movie is added"});
+                        webix.message({ type: 'success', text: 'The movie is added' });
                     }
                 }
             },
-            { view: 'button', value: 'Clear' }
+            {
+                view: 'button',
+                value: 'Clear',
+                click: function() {
+                    $$('movies_form').clear();
+                }
+            }
         ];
 
         let form = {
