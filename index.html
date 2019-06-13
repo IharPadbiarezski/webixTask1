@@ -89,12 +89,20 @@
             data: small_film_set
         };
 
-        let buttons = [ { view: 'button', css: 'webix_primary', value: 'Add New', click:function(){
-      
-          var item = $$("movies_form").getValues();
-          $$("movies_table").add(item);
-      
-    } }, { view: 'button', value: 'Clear' } ];
+        let buttons = [
+            {
+                view: 'button',
+                css: 'webix_primary',
+                value: 'Add New',
+                click: function() {
+                    if ($$('movies_form').validate()) {
+                        var item = $$('movies_form').getValues();
+                        $$('movies_table').add(item);
+                    }
+                }
+            },
+            { view: 'button', value: 'Clear' }
+        ];
 
         let form = {
             view: 'toolbar',
@@ -111,7 +119,26 @@
                         { view: 'text', name: 'rating', label: 'Rating' },
                         { view: 'text', name: 'votes', label: 'Votes' },
                         { margin: '20', cols: webix.copy(buttons) }
-                    ]
+                    ],
+                    rules: {
+                        title: webix.rules.isNotEmpty,
+                        year: function(value) {
+                            let currentYear = new Date().getFullYear();
+                            return value > 1970 && value < currentYear;
+                        },
+                        votes: function(value) {
+                            if (value !== '') {
+                                return value < 10000;
+                            }
+                            return false;
+                        },
+                        rating: function(value) {
+                            if (value == '' || isNaN(value)) {
+                                return false;
+                            }
+                            return value != 0;
+                        }
+                    }
                 }
             ]
         };
