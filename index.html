@@ -9,9 +9,6 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.materialdesignicons.com/2.7.94/css/materialdesignicons.css">
     <title>Webix | Task 1</title>
     <style>
-        .webix_toolbar.webix_dark .webix_secondary button {
-            background: none;
-        }
 
         .label {
             color: #fff;
@@ -50,6 +47,7 @@
                     type: 'icon',
                     icon: 'mdi mdi-account',
                     maxWidth: 150,
+                    css: 'webix_transparent',
                     label: 'Profile',
                     popup: 'profile_popup'
                 }
@@ -105,62 +103,60 @@
                 view: 'button',
                 value: 'Clear',
                 click: function() {
-                    webix.confirm({
-                        text:"Are you sure you want to clean the form?"
-                    }).then(
-                        function(){
-                            $$('movies_form').clear();
-                        }, 
-                        function(){
-                            webix.message("Rejected");
-                        }
-                    );
+                    webix
+                        .confirm({
+                            text: 'Are you sure you want to clean the form?'
+                        })
+                        .then(
+                            function() {
+                                $$('movies_form').clearValidation();
+                                $$('movies_form').clear();
+                            },
+                            function() {
+                                webix.message('Rejected');
+                            }
+                        );
                 }
             }
         ];
 
         let form = {
-            view: 'toolbar',
+            view: 'form',
+            id: 'movies_form',
             gravity: 1.5,
-            rows: [
+            elements: [
+                { type: 'section', template: 'Icon buttons', borderless: true },
+                { view: 'text', name: 'title', label: 'Title', invalidMessage: 'Please, enter the name of a movie' },
                 {
-                    view: 'form',
-                    id: 'movies_form',
-                    borderless: true,
-                    elements: [
-                        { type: 'section', template: 'Icon buttons', borderless: true },
-                        { view: 'text', name: 'title', label: 'Title', invalidMessage: 'Please, enter the name of a movie' },
-                        {
-                            view: 'text',
-                            name: 'year',
-                            label: 'Year',
-                            invalidMessage: 'Enter year should be between 1970 and current year'
-                        },
-                        { view: 'text', name: 'rating', label: 'Rating', invalidMessage: 'Enter rating can not be empty or 0' },
-                        { view: 'text', name: 'votes', label: 'Votes', invalidMessage: 'Enter vote must be less than 100000' },
-                        { margin: '20', cols: webix.copy(buttons) }
-                    ],
-                    rules: {
-                        title: webix.rules.isNotEmpty,
-                        year: function(value) {
-                            let currentYear = new Date().getFullYear();
-                            return value > 1970 && value < currentYear;
-                        },
-                        votes: function(value) {
-                            if (value !== '') {
-                                return value < 100000;
-                            }
-                            return false;
-                        },
-                        rating: function(value) {
-                            if (value == '' || isNaN(value)) {
-                                return false;
-                            }
-                            return value != 0;
-                        }
+                    view: 'text',
+                    name: 'year',
+                    label: 'Year',
+                    invalidMessage: 'Enter year should be between 1970 and current year'
+                },
+                { view: 'text', name: 'rating', label: 'Rating', invalidMessage: 'Enter rating can not be empty or 0' },
+                { view: 'text', name: 'votes', label: 'Votes', invalidMessage: 'Enter vote must be less than 100000' },
+                { margin: '20', cols: webix.copy(buttons) },
+                {}
+            ],
+            rules: {
+                title: webix.rules.isNotEmpty,
+                year: function(value) {
+                    let currentYear = new Date().getFullYear();
+                    return value > 1970 && value < currentYear;
+                },
+                votes: function(value) {
+                    if (value != '') {
+                        return value < 100000;
                     }
+                    return false;
+                },
+                rating: function(value) {
+                    if (webix.rules.isNumber(value)) {
+                        return value != 0;
+                    }
+                    return false;
                 }
-            ]
+            }
         };
 
         let footer = {
