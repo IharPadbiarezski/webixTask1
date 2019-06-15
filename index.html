@@ -56,12 +56,19 @@
 
         let side = {
             css: 'side',
+            gravity: 0.2,
             rows: [
                 {
                     view: 'list',
                     borderless: true,
                     autoheight: true,
                     type: 'clean',
+                    select: true,
+                    on: {
+                        onAfterSelect: function(id) {
+                            $$(id).show();
+                        }
+                    },
                     data: [ 'Dashboard', 'Users', 'Products', 'Locations' ]
                 },
                 {},
@@ -159,6 +166,15 @@
             }
         };
 
+        let main = {
+            cells: [
+                { id: 'Dashboard', cols: [ moviesTable, form ] },
+                { id: 'Users', template: 'Users View' },
+                { id: 'Products', template: 'Products View' },
+                { id: 'Admin', template: 'Admin View' }
+            ]
+        };
+
         let footer = {
             id: 'footer',
             height: 60,
@@ -182,7 +198,7 @@
             rows: [
                 header,
                 {
-                    cols: [ side, resizer, moviesTable, form ]
+                    cols: [ side, resizer, main ]
                 },
                 footer
             ]
