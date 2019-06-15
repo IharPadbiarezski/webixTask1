@@ -31,7 +31,10 @@
 <body>
     
     <script type="module" charset="utf-8">
-        import { small_film_set } from './testdata.js';
+        import { small_film_set } from './data/testdata.js';
+        import { user_set } from './data/users.js';
+        import { product_set } from './data/products.js';
+        import { film_set } from './data/data.js';
 
         let header = {
             view: 'toolbar',
@@ -90,7 +93,7 @@
             gravity: 3,
             scroll: 'y',
             autoConfig: true,
-            data: small_film_set
+            data: film_set
         };
 
         let buttons = [
@@ -100,8 +103,7 @@
                 value: 'Add New',
                 click: function() {
                     if ($$('movies_form').validate()) {
-                        var item = $$('movies_form').getValues();
-                        $$('movies_table').add(item);
+                        save_row();
                         webix.message({ type: 'success', text: 'The movie is added' });
                     }
                 }
@@ -203,6 +205,20 @@
                 footer
             ]
         });
+
+        $$("movies_table").attachEvent("onAfterSelect", function(id){
+            const item = $$("movies_table").getItem(id);
+            $$("movies_form").setValues(item);
+            $$('movies_form').clearValidation();
+        });
+
+        function save_row() {
+            const values = $$("movies_form").getValues();
+            if (values.id)
+                $$("movies_table").updateItem(values.id,values);
+            else
+                $$("movies_table").add(values);
+        }
 
       </script>
 </body>
