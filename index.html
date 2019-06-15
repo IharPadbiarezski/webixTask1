@@ -239,10 +239,23 @@
             }
         }
 
+        let chart = {
+            view:"chart",
+            // container:"chartDiv",
+            type:"bar",
+            value:"#age#",
+            xAxis:{
+                title: "Age",
+                template:"#age#"
+            },
+            data: user_set
+        };
+	
+
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ moviesTable, form ] },
-                { id: 'Users', rows: [users] },
+                { id: 'Users', rows: [users, chart] },
                 { id: 'Products', template: 'Products View' },
                 { id: 'Admin', template: 'Admin View' }
             ]
