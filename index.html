@@ -99,18 +99,19 @@
                     obj.rating = obj.rating.replace(',', '.');
                 }
             },
+            template:"#id# #title# #year# #votes# #rating#" ,
             columns: [
                 { id: 'rank', header: '', css: 'rank', width: 50, sort: 'int' },
-                { id: 'title', header: 'Film title', fillspace: true, sort: 'string' },
-                { id: 'year', header: 'Released', sort: 'int' },
+                { id: 'title', header: ['Film title', {content:"textFilter"}], fillspace: true, sort: 'string' },
+                { id: 'year', header: ['Released', {content:"selectFilter"}], sort: 'int' },
                 {
                     id: 'votes',
-                    header: 'Votes',
+                    header: ['Votes', {content:"numberFilter"}],
                     sort: 'int'
                 },
                 {
                     id: 'rating',
-                    header: 'Ratings',
+                    header: ['Ratings', {content:"numberFilter"}],
                     sort: 'int'
                 }
             ],
