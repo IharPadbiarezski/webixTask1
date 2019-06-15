@@ -30,6 +30,10 @@
         .grey {
             background-color: #F4F5F9;
         }
+
+        .styledRow {
+            background-color: blanchedalmond;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +101,7 @@
             gravity: 3,
             scroll: 'y',
             select: true,
+            hover: "styledRow",
             scheme: {
                 $init: function(obj) {
                     obj.votes = obj.votes.replace(',', '.');
