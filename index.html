@@ -92,7 +92,28 @@
             id: 'movies_table',
             gravity: 3,
             scroll: 'y',
-            autoConfig: true,
+            select: true,
+            scheme: {
+                $init: function(obj) {
+                    obj.votes = obj.votes.replace(',', '.');
+                    obj.rating = obj.rating.replace(',', '.');
+                }
+            },
+            columns: [
+                { id: 'rank', header: '', css: 'rank', width: 50, sort: 'int' },
+                { id: 'title', header: 'Film title', fillspace: true, sort: 'string' },
+                { id: 'year', header: 'Released', sort: 'int' },
+                {
+                    id: 'votes',
+                    header: 'Votes',
+                    sort: 'int'
+                },
+                {
+                    id: 'rating',
+                    header: 'Ratings',
+                    sort: 'int'
+                }
+            ],
             data: film_set
         };
 
@@ -104,7 +125,6 @@
                 click: function() {
                     if ($$('movies_form').validate()) {
                         save_row();
-                        webix.message({ type: 'success', text: 'The movie is added' });
                     }
                 }
             },
@@ -206,18 +226,22 @@
             ]
         });
 
-        $$("movies_table").attachEvent("onAfterSelect", function(id){
-            const item = $$("movies_table").getItem(id);
-            $$("movies_form").setValues(item);
+        $$('movies_table').attachEvent('onAfterSelect', function(id) {
+            const item = $$('movies_table').getItem(id);
+            $$('movies_form').setValues(item);
             $$('movies_form').clearValidation();
         });
 
         function save_row() {
-            const values = $$("movies_form").getValues();
-            if (values.id)
-                $$("movies_table").updateItem(values.id,values);
-            else
-                $$("movies_table").add(values);
+            const values = $$('movies_form').getValues();
+            if (values.id) {
+                $$('movies_table').updateItem(values.id, values);
+                webix.message({ type: 'success', text: 'The movie is updated' });
+            } else {
+                values.rank = $$('movies_table').count() + 1;
+                $$('movies_table').add(values);
+                webix.message({ type: 'success', text: 'The movie is added' });
+            }
         }
 
       </script>
