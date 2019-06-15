@@ -86,7 +86,7 @@
             rows: [
                 {
                     view: 'list',
-                    id: "list",
+                    id: 'list',
                     borderless: true,
                     autoheight: true,
                     type: 'clean',
@@ -226,36 +226,44 @@
             }
         };
 
+        let usersToolbar = {
+            view: 'toolbar',
+            cols: [
+                { view: 'text', gravity: 3, id: 'list_input' },
+                { view: 'button', value: 'Sort asc', css: 'webix_primary', click: sortNameAsc },
+                { view: 'button', value: 'Sort desc', css: 'webix_primary', click: sortNameDesc }
+            ]
+        };
+
         let users = {
-            view:"list",
+            view: 'list',
+            id: 'users_list',
             data: user_set,
-            select:true,
-            template:"#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
-            onClick:{
-                rmvicon:function(e, id){
-                this.remove(id);
-                return false;
+            select: true,
+            template: "#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
+            onClick: {
+                rmvicon: function(e, id) {
+                    this.remove(id);
+                    return false;
                 }
             }
-        }
+        };
 
         let chart = {
-            view:"chart",
-            // container:"chartDiv",
-            type:"bar",
-            value:"#age#",
-            xAxis:{
-                title: "Age",
-                template:"#age#"
+            view: 'chart',
+            type: 'bar',
+            value: '#age#',
+            xAxis: {
+                title: 'Age',
+                template: '#age#'
             },
             data: user_set
         };
-	
 
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ moviesTable, form ] },
-                { id: 'Users', rows: [users, chart] },
+                { id: 'Users', rows: [ usersToolbar, users, chart ] },
                 { id: 'Products', template: 'Products View' },
                 { id: 'Admin', template: 'Admin View' }
             ]
@@ -298,7 +306,14 @@
             $$('movies_form').clearValidation();
         });
 
-        $$("list").select("Users")
+        $$('list_input').attachEvent('onTimedKeyPress', function() {
+            let value = this.getValue().toLowerCase();
+            $$('users_list').filter(function(obj) {
+                return obj.name.toLowerCase().indexOf(value) !== -1;
+            });
+        });
+
+        $$('list').select('Users');
 
         // Functions
 
@@ -316,6 +331,14 @@
                 $$('movies_table').add(values);
                 webix.message({ type: 'success', text: 'The movie is added' });
             }
+        }
+
+        function sortNameAsc() {
+            $$('users_list').sort('#name#', 'asc');
+        }
+
+        function sortNameDesc() {
+            $$('users_list').sort('#name#', 'desc');
         }
 
       </script>
