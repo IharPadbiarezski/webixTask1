@@ -309,7 +309,10 @@
         $$('list_input').attachEvent('onTimedKeyPress', function() {
             let value = this.getValue().toLowerCase();
             $$('users_list').filter(function(obj) {
-                return obj.name.toLowerCase().indexOf(value) !== -1;
+                let filter = [obj.name, obj.country].join(" from ");
+                filter = filter.toString().toLowerCase();
+                console.log(filter)
+                return (filter.indexOf(value) !== -1);
             });
         });
 
