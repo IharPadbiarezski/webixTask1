@@ -34,6 +34,15 @@
         .styledRow {
             background-color: blanchedalmond;
         }
+
+        .rank .webix_cell, .delbtn .webix_cell, .delbtn.webix.hcell {
+            text-align:center;
+        }
+
+        .delicon {
+            padding: 5px 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -101,30 +110,42 @@
             gravity: 3,
             scroll: 'y',
             select: true,
-            hover: "styledRow",
+            hover: 'styledRow',
             scheme: {
                 $init: function(obj) {
                     obj.votes = obj.votes.replace(',', '.');
                     obj.rating = obj.rating.replace(',', '.');
                 }
             },
-            template:"#id# #title# #year# #votes# #rating#" ,
+            template: '#id# #title# #year# #votes# #rating#',
             columns: [
                 { id: 'rank', header: '', css: 'rank', width: 50, sort: 'int' },
-                { id: 'title', header: ['Film title', {content:"textFilter"}], fillspace: true, sort: 'string' },
-                { id: 'year', header: ['Released', {content:"selectFilter"}], sort: 'int' },
+                { id: 'title', header: [ 'Film title', { content: 'textFilter' } ], fillspace: true, sort: 'string' },
+                { id: 'year', header: [ 'Released', { content: 'selectFilter' } ], sort: 'int' },
                 {
                     id: 'votes',
-                    header: ['Votes', {content:"numberFilter"}],
+                    header: [ 'Votes', { content: 'numberFilter' } ],
                     sort: 'int'
                 },
                 {
                     id: 'rating',
-                    header: ['Ratings', {content:"numberFilter"}],
+                    header: [ 'Ratings', { content: 'numberFilter' } ],
                     sort: 'int'
+                },
+                {
+                    id: '',
+                    template: "<span class='webix_icon wxi-trash delicon'></span>",
+                    css: 'delbtn',
+                    width: 100
                 }
             ],
-            data: film_set
+            data: film_set,
+            onClick: {
+                delicon: function(e, id, trg) {
+                    this.remove(id);
+                    return false;
+                }
+            }
         };
 
         let buttons = [
@@ -247,7 +268,7 @@
         // Functions
 
         function addClassToFirstRow() {
-            film_set[0].$css = "grey";
+            film_set[0].$css = 'grey';
         }
 
         function save_row() {
