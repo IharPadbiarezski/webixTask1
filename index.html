@@ -39,8 +39,14 @@
             text-align:center;
         }
 
-        .delicon {
-            padding: 5px 20px;
+        .rmvicon {
+            width:40px;
+            text-align: center;
+            float:right;
+        }
+
+        .delicon, .rmvicon {
+            padding: 5px 30px;
             cursor: pointer;
         }
     </style>
@@ -80,6 +86,7 @@
             rows: [
                 {
                     view: 'list',
+                    id: "list",
                     borderless: true,
                     autoheight: true,
                     type: 'clean',
@@ -219,10 +226,23 @@
             }
         };
 
+        let users = {
+            view:"list",
+            data: user_set,
+            select:true,
+            template:"#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
+            onClick:{
+                rmvicon:function(e, id){
+                this.remove(id);
+                return false;
+                }
+            }
+        }
+
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ moviesTable, form ] },
-                { id: 'Users', template: 'Users View' },
+                { id: 'Users', rows: [users] },
                 { id: 'Products', template: 'Products View' },
                 { id: 'Admin', template: 'Admin View' }
             ]
@@ -264,6 +284,8 @@
             $$('movies_form').setValues(item);
             $$('movies_form').clearValidation();
         });
+
+        $$("list").select("Users")
 
         // Functions
 
