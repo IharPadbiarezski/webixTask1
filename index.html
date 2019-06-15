@@ -26,6 +26,10 @@
         .footer__description {
             text-align: center;
         }
+
+        .grey {
+            background-color: #F4F5F9;
+        }
     </style>
 </head>
 <body>
@@ -207,6 +211,8 @@
                 "<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
         };
 
+        addClassToFirstRow();
+
         webix.ui({
             view: 'popup',
             id: 'profile_popup',
@@ -232,6 +238,12 @@
             $$('movies_form').setValues(item);
             $$('movies_form').clearValidation();
         });
+
+        // Functions
+
+        function addClassToFirstRow() {
+            film_set[0].$css = "grey";
+        }
 
         function save_row() {
             const values = $$('movies_form').getValues();
