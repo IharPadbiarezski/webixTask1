@@ -27,11 +27,11 @@
             text-align: center;
         }
 
-        .grey {
+        .movies-table .webix_column.webix_first {
             background-color: #F4F5F9;
         }
 
-        .styledRow {
+        .moviestable-row-hoverbg, .user-list-bg {
             background-color: blanchedalmond;
         }
 
@@ -114,7 +114,9 @@
             gravity: 3,
             scroll: 'y',
             select: true,
-            hover: 'styledRow',
+            hover: 'moviestable-row-hoverbg',
+            url: 'data/data.js',
+            css: 'movies-table',
             scheme: {
                 $init: function(obj) {
                     obj.votes = obj.votes.replace(',', '.');
@@ -236,10 +238,15 @@
             id: 'users_list',
             select: true,
             template: "#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
+            scheme: {
+                $init: function(obj) {
+                    if (obj.id < 6) obj.$css = 'user-list-bg';
+                }
+            },
             onClick: {
                 rmvicon: function(e, id) {
                     this.remove(id);
-                    $$("users_chart").remove(id);
+                    $$('users_chart').remove(id);
                     return false;
                 }
             }
@@ -247,7 +254,7 @@
 
         let chart = {
             view: 'chart',
-            id: "users_chart",
+            id: 'users_chart',
             type: 'bar',
             value: '#age#',
             xAxis: {
@@ -257,34 +264,34 @@
         };
 
         let tree = {
-                view:"treetable",
-                id: "products_treetable",
-                select: "cell",
-                columns:[
-                    { 
-                        id:"id",    
-                        header:"", 
-                        width:50
-                    },
-                    { 
-                        id:"title",
-                        header:"Title", 
-                        template:"{common.treetable()} #title#",
-                        fillspace: true
-                    },
-                    { 
-                        id:"price",   
-                        header:"Price",
-                        width:200,
-                    }
-                ]
-        }
+            view: 'treetable',
+            id: 'products_treetable',
+            select: 'cell',
+            columns: [
+                {
+                    id: 'id',
+                    header: '',
+                    width: 50
+                },
+                {
+                    id: 'title',
+                    header: 'Title',
+                    template: '{common.treetable()} #title#',
+                    fillspace: true
+                },
+                {
+                    id: 'price',
+                    header: 'Price',
+                    width: 200
+                }
+            ]
+        };
 
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ moviesTable, form ] },
                 { id: 'Users', rows: [ usersToolbar, users, chart ] },
-                { id: 'Products', rows: [tree] },
+                { id: 'Products', rows: [ tree ] },
                 { id: 'Admin', template: 'Admin View' }
             ]
         };
@@ -297,8 +304,6 @@
             template:
                 "<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
         };
-
-        // addClassToFirstRow();
 
         webix.ui({
             view: 'popup',
@@ -329,27 +334,19 @@
         $$('list_input').attachEvent('onTimedKeyPress', function() {
             let value = this.getValue().toLowerCase();
             $$('users_list').filter(function(obj) {
-                let filter = [obj.name, obj.country].join(" from ");
+                let filter = [ obj.name, obj.country ].join(' from ');
                 filter = filter.toString().toLowerCase();
-                return (filter.indexOf(value) !== -1);
+                return filter.indexOf(value) !== -1;
             });
         });
 
-        $$("users_list").load('data/users.js').then($$("users_chart").load('data/users.js'));
+        $$('users_list').load('data/users.js').then($$('users_chart').load('data/users.js'));
 
-        $$("movies_table").load('data/data.js');
-
-        $$("products_treetable").load('data/products.js').then(function(data){
-            $$("products_treetable").openAll();
-        })
-
-        $$('list').select('Products');
+        $$('products_treetable').load('data/products.js').then(function(data) {
+            $$('products_treetable').openAll();
+        });
 
         // Functions
-
-        // function addClassToFirstRow() {
-        //     film_set[0].$css = 'grey';
-        // }
 
         function save_row() {
             const values = $$('movies_form').getValues();
