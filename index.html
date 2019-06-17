@@ -329,19 +329,20 @@
             view: 'treetable',
             id: 'products_treetable',
             select: 'cell',
+            editable: true,
+            editaction:"dblclick",
             columns: [
                 {
                     id: 'id',
                     header: '',
-                    width: 50,
-                    editor: 'text'
+                    width: 50
                 },
                 {
                     id: 'title',
                     header: 'Title',
-                    editor: 'text',
                     template: '{common.treetable()} #title#',
-                    fillspace: true
+                    fillspace: true,
+                    editor: 'text'
                 },
                 {
                     id: 'price',
@@ -350,7 +351,10 @@
                     editor: 'text'
                 }
             ],
-            editable: true
+            rules: {
+                title: webix.rules.isNotEmpty,
+                price:  webix.rules.isNumber
+            }
         };
 
         let main = {
