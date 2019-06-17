@@ -147,7 +147,18 @@
             ],
             onClick: {
                 delicon: function(e, id, trg) {
-                    this.remove(id);
+                    webix
+                        .confirm({
+                            text: 'Are you sure you want to remove the movie?'
+                        })
+                        .then(
+                            function() {
+                                $$('movies_table').remove(id);
+                            },
+                            function() {
+                                webix.message('Rejected');
+                            }
+                        );
                     return false;
                 }
             }
@@ -245,8 +256,19 @@
             },
             onClick: {
                 rmvicon: function(e, id) {
-                    this.remove(id);
-                    $$('users_chart').remove(id);
+                    webix
+                        .confirm({
+                            text: 'Are you sure you want to remove the user?'
+                        })
+                        .then(
+                            function() {
+                                $$('users_list').remove(id);
+                                $$('users_chart').remove(id);
+                            },
+                            function() {
+                                webix.message('Rejected');
+                            }
+                        );
                     return false;
                 }
             }
@@ -334,7 +356,7 @@
         $$('list_input').attachEvent('onTimedKeyPress', function() {
             let value = this.getValue().toLowerCase();
             $$('users_list').filter(function(obj) {
-                let filter = [ obj.name, obj.country ].join(' from ');
+                let filter = [ obj.name, obj.country ].join('|');
                 filter = filter.toString().toLowerCase();
                 return filter.indexOf(value) !== -1;
             });
