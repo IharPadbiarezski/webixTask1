@@ -289,10 +289,13 @@
         };
 
         let users = {
-            view: 'list',
+            view: 'editlist',
             id: 'users_list',
             select: true,
             template: "#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
+            editable: true,
+            editor: "text",
+            editValue: "name",
             scheme: {
                 $init: function(obj) {
                     if (obj.id < 6) obj.$css = 'user-list-bg';
@@ -321,6 +324,9 @@
                         );
                     return false;
                 }
+            },
+            rules: {
+                name: webix.rules.isNotEmpty
             }
         };
 
@@ -394,6 +400,10 @@
                 data: [ 'Settings', 'Log out' ]
             }
         });
+
+        webix.protoUI({
+            name:"editlist"
+        }, webix.EditAbility, webix.ui.list);
 
         webix.ui({
             rows: [
