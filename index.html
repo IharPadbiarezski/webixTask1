@@ -56,6 +56,27 @@
     <script type="module" charset="utf-8">
         import { small_film_set } from './data/testdata.js';
 
+        let categoriesAll = [];
+
+        webix
+            .ajax()
+            .get('data/categories.js')
+            .then(function(data) {
+                return data.json();
+            })
+            .then((categories) => {
+                categories.forEach(function(category) {
+                    categoriesAll.push({ id: category.id, value: category.value });
+                });
+            });
+
+        let categories = [
+            { id: 1, value: 'Drama' },
+            { id: 2, value: 'Fiction' },
+            { id: 3, value: 'Comedy' },
+            { id: 4, value: 'Horror' }
+        ];
+
         let header = {
             view: 'toolbar',
             height: 70,
@@ -121,12 +142,19 @@
                 $init: function(obj) {
                     obj.votes = obj.votes.replace(',', '.');
                     obj.rating = obj.rating.replace(',', '.');
+                    obj.categoryId = Math.floor(Math.random() * 4) + 1;
                 }
             },
             template: '#id# #title# #year# #votes# #rating#',
             columns: [
                 { id: 'rank', header: '', css: 'rank', width: 50, sort: 'int' },
                 { id: 'title', header: [ 'Film title', { content: 'textFilter' } ], fillspace: true, sort: 'string' },
+                {
+                    id: 'categoryId',
+                    header: [ 'Cadegory', { content: 'selectFilter' } ],
+                    collection: categories
+                    // sort: 'string'
+                },
                 { id: 'year', header: [ 'Released', { content: 'selectFilter' } ], sort: 'int' },
                 {
                     id: 'votes',
@@ -170,8 +198,10 @@
                 css: 'webix_primary',
                 value: 'Add New',
                 click: function() {
-                    if ($$('movies_form').validate()) {
-                        save_row();
+                    let form = $$('movies_form');
+                    if (form.isDirty()) {
+                        if (!form.validate()) return false;
+                        form.save();
                     }
                 }
             },
@@ -293,20 +323,24 @@
                 {
                     id: 'id',
                     header: '',
-                    width: 50
+                    width: 50,
+                    editor: 'text'
                 },
                 {
                     id: 'title',
                     header: 'Title',
+                    editor: 'text',
                     template: '{common.treetable()} #title#',
                     fillspace: true
                 },
                 {
                     id: 'price',
                     header: 'Price',
-                    width: 200
+                    width: 200,
+                    editor: 'text'
                 }
-            ]
+            ],
+            editable: true
         };
 
         let main = {
@@ -347,18 +381,16 @@
             ]
         });
 
+        $$('movies_form').bind($$('movies_table'));
+
         $$('movies_table').attachEvent('onAfterSelect', function(id) {
-            const item = $$('movies_table').getItem(id);
-            $$('movies_form').setValues(item);
             $$('movies_form').clearValidation();
         });
 
         $$('list_input').attachEvent('onTimedKeyPress', function() {
             let value = this.getValue().toLowerCase();
             $$('users_list').filter(function(obj) {
-                let filter = [ obj.name, obj.country ].join('|');
-                filter = filter.toString().toLowerCase();
-                return filter.indexOf(value) !== -1;
+                return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
             });
         });
 
@@ -369,18 +401,6 @@
         });
 
         // Functions
-
-        function save_row() {
-            const values = $$('movies_form').getValues();
-            if (values.id) {
-                $$('movies_table').updateItem(values.id, values);
-                webix.message({ type: 'success', text: 'The movie is updated' });
-            } else {
-                values.rank = $$('movies_table').count() + 1;
-                $$('movies_table').add(values);
-                webix.message({ type: 'success', text: 'The movie is added' });
-            }
-        }
 
         function sortNameAsc() {
             $$('users_list').sort('#name#', 'asc');
