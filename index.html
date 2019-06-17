@@ -129,10 +129,20 @@
 
         let resizer = { view: 'resizer' };
 
+        let moviesTabbar = {
+            view: 'tabbar',
+            id: 'selector',
+            options: [ { id: 1, value: 'All' }, { id: 2, value: 'Old' }, { id: 3, value: 'Modern' }, { id: 4, value: 'New' } ],
+            on: {
+                onChange: function() {
+                    $$('movies_table').filterByAll();
+                }
+            }
+        };
+
         let moviesTable = {
             view: 'datatable',
             id: 'movies_table',
-            gravity: 3,
             scroll: 'y',
             select: true,
             hover: 'moviestable-row-hoverbg',
@@ -152,10 +162,10 @@
                 {
                     id: 'categoryId',
                     header: [ 'Cadegory', { content: 'selectFilter' } ],
-                    collection: categories
-                    // sort: 'string'
+                    collection: categories,
+                    sort: 'string'
                 },
-                { id: 'year', header: [ 'Released', { content: 'selectFilter' } ], sort: 'int' },
+                { id: 'year', header: [ 'Released' ] },
                 {
                     id: 'votes',
                     header: [ 'Votes', { content: 'numberFilter' } ],
@@ -345,7 +355,7 @@
 
         let main = {
             cells: [
-                { id: 'Dashboard', cols: [ moviesTable, form ] },
+                { id: 'Dashboard', cols: [ { gravity: 3, rows: [ moviesTabbar, moviesTable ] }, form ] },
                 { id: 'Users', rows: [ usersToolbar, users, chart ] },
                 { id: 'Products', rows: [ tree ] },
                 { id: 'Admin', template: 'Admin View' }
@@ -399,6 +409,33 @@
         $$('products_treetable').load('data/products.js').then(function(data) {
             $$('products_treetable').openAll();
         });
+
+        $$('movies_table').registerFilter(
+            $$('selector'),
+            {
+                columnId: 'year',
+                compare: function(value, filter, item) {
+                    let currentYear = new Date();
+                    if (filter == 2) {
+                        return value <= 1980;
+                    } else if (filter == 3) {
+                        return value > 1980 && value <= 2000;
+                    } else if (filter == 4) {
+                        return value > 2000 && value <= currentYear.getFullYear();
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
+                getValue: function(node) {
+                    return node.getValue();
+                },
+                setValue: function(node, value) {
+                    node.setValue(value);
+                }
+            }
+        );
 
         // Functions
 
