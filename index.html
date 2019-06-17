@@ -60,6 +60,9 @@
     <script type="module" charset="utf-8">
         import { small_film_set } from './data/testdata.js';
 
+        let names = ["Ihar", "Masha", "Michael", "Tom", "Donald", "Mary", "Vika", "Serg", "Toha", "Katya"];
+        let countries = ["Germany", "USA", "Canada", "Russia", "China", "France", "Belarus", "Italy", "Spain", "Chile"]
+
         let categoriesAll = [];
 
         webix
@@ -284,7 +287,16 @@
             cols: [
                 { view: 'text', gravity: 3, id: 'list_input' },
                 { view: 'button', value: 'Sort asc', css: 'webix_primary', click: sortNameAsc },
-                { view: 'button', value: 'Sort desc', css: 'webix_primary', click: sortNameDesc }
+                { view: 'button', value: 'Sort desc', css: 'webix_primary', click: sortNameDesc },
+                { view: 'button', value: 'Add New', css: 'webix_primary', click: function() { 
+
+                    const posName = getRandomNumber(10);
+                    const posCountry = getRandomNumber(10);
+                    const age = getRandomNumber(80);
+
+                    $$("users_list").add({name: names[posName], age: age, country: countries[posCountry]})
+                }
+             }
             ]
         };
 
@@ -469,6 +481,10 @@
 
         function sortNameDesc() {
             $$('users_list').sort('#name#', 'desc');
+        }
+
+        function getRandomNumber(maxValue) {
+            return Math.floor(Math.random() * maxValue);
         }
 
       </script>
