@@ -35,6 +35,10 @@
             background-color: blanchedalmond;
         }
 
+        .user-list-newbg {
+            background-color: rgb(255, 245, 103);
+        }
+
         .rank .webix_cell, .delbtn .webix_cell, .delbtn.webix.hcell {
             text-align:center;
         }
@@ -292,6 +296,12 @@
             scheme: {
                 $init: function(obj) {
                     if (obj.id < 6) obj.$css = 'user-list-bg';
+
+                    if(obj.$css) {
+                        obj.$css= ""
+                    }
+
+                    if (obj.age < 26) obj.$css = 'user-list-newbg';
                 }
             },
             onClick: {
