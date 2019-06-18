@@ -60,8 +60,10 @@
     <script type="module" charset="utf-8">
         import { small_film_set } from './data/testdata.js';
 
-        let names = ["Ihar", "Masha", "Michael", "Tom", "Donald", "Mary", "Vika", "Serg", "Toha", "Katya"];
-        let countries = ["Germany", "USA", "Canada", "Russia", "China", "France", "Belarus", "Italy", "Spain", "Chile"]
+        let grouped;
+
+        let names = [ 'Ihar', 'Masha', 'Michael', 'Tom', 'Donald', 'Mary', 'Vika', 'Serg', 'Toha', 'Katya' ];
+        let countries = [ 'Germany', 'USA', 'Canada', 'Russia', 'China', 'France', 'Belarus', 'Italy', 'Spain', 'Chile' ];
 
         let categoriesAll = [];
 
@@ -76,13 +78,6 @@
                     categoriesAll.push({ id: category.id, value: category.value });
                 });
             });
-
-        let categories = [
-            { id: 1, value: 'Drama' },
-            { id: 2, value: 'Fiction' },
-            { id: 3, value: 'Comedy' },
-            { id: 4, value: 'Horror' }
-        ];
 
         let header = {
             view: 'toolbar',
@@ -169,7 +164,7 @@
                 {
                     id: 'categoryId',
                     header: [ 'Cadegory', { content: 'selectFilter' } ],
-                    collection: categories,
+                    collection: categoriesAll,
                     sort: 'string'
                 },
                 { id: 'year', header: [ 'Released' ] },
@@ -288,15 +283,35 @@
                 { view: 'text', gravity: 3, id: 'list_input' },
                 { view: 'button', value: 'Sort asc', css: 'webix_primary', click: sortNameAsc },
                 { view: 'button', value: 'Sort desc', css: 'webix_primary', click: sortNameDesc },
-                { view: 'button', value: 'Add New', css: 'webix_primary', click: function() { 
+                {
+                    view: 'button',
+                    value: 'Add New',
+                    css: 'webix_primary',
+                    click: function() {
+                        const posName = getRandomNumber(10);
+                        const posCountry = getRandomNumber(10);
+                        const age = getRandomNumber(80);
+                        console.table([ names[posName], countries[posCountry], age ]);
 
-                    const posName = getRandomNumber(10);
-                    const posCountry = getRandomNumber(10);
-                    const age = getRandomNumber(80);
+                        $$('users_list').add({ name: names[posName], age: age, country: countries[posCountry] });
+                    }
+                },
+                {
+                    view: 'button',
+                    value: 'Group',
+                    click: function() {
+                        if (!grouped)
+                            $$('users_chart').group({
+                                by: 'country',
+                                map: {
+                                    country: [ 'country', 'sum' ]
+                                }
+                            });
+                        else $$('users_chart').ungroup();
 
-                    $$("users_list").add({name: names[posName], age: age, country: countries[posCountry]})
+                        grouped = !grouped;
+                    }
                 }
-             }
             ]
         };
 
@@ -306,14 +321,14 @@
             select: true,
             template: "#name# from #country# <span class='webix_icon wxi-close rmvicon'></span>",
             editable: true,
-            editor: "text",
-            editValue: "name",
+            editor: 'text',
+            editValue: 'name',
             scheme: {
                 $init: function(obj) {
                     if (obj.id < 6) obj.$css = 'user-list-bg';
 
-                    if(obj.$css) {
-                        obj.$css= ""
+                    if (obj.$css) {
+                        obj.$css = '';
                     }
 
                     if (obj.age < 26) obj.$css = 'user-list-newbg';
@@ -328,7 +343,6 @@
                         .then(
                             function() {
                                 $$('users_list').remove(id);
-                                $$('users_chart').remove(id);
                             },
                             function() {
                                 webix.message('Rejected');
@@ -351,6 +365,14 @@
                 title: 'Age',
                 template: '#age#'
             }
+            // scheme: {
+            //     $group: {
+            //         by: "country",
+            //         map: {
+            //             "country": ["country", "sum"]
+            //         }
+            //     }
+            // }
         };
 
         let tree = {
@@ -358,7 +380,7 @@
             id: 'products_treetable',
             select: 'cell',
             editable: true,
-            editaction:"dblclick",
+            editaction: 'dblclick',
             columns: [
                 {
                     id: 'id',
@@ -381,7 +403,7 @@
             ],
             rules: {
                 title: webix.rules.isNotEmpty,
-                price:  webix.rules.isNumber
+                price: webix.rules.isNumber
             }
         };
 
@@ -403,75 +425,97 @@
                 "<p>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)</p>"
         };
 
-        webix.ui({
-            view: 'popup',
-            id: 'profile_popup',
-            body: {
-                view: 'list',
-                autoheight: true,
-                data: [ 'Settings', 'Log out' ]
-            }
-        });
+        // Webix
 
-        webix.protoUI({
-            name:"editlist"
-        }, webix.EditAbility, webix.ui.list);
-
-        webix.ui({
-            rows: [
-                header,
-                {
-                    cols: [ side, resizer, main ]
-                },
-                footer
-            ]
-        });
-
-        $$('movies_form').bind($$('movies_table'));
-
-        $$('movies_table').attachEvent('onAfterSelect', function(id) {
-            $$('movies_form').clearValidation();
-        });
-
-        $$('list_input').attachEvent('onTimedKeyPress', function() {
-            let value = this.getValue().toLowerCase();
-            $$('users_list').filter(function(obj) {
-                return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
+        webix.ready(function() {
+            webix.ui({
+                view: 'popup',
+                id: 'profile_popup',
+                body: {
+                    view: 'list',
+                    autoheight: true,
+                    data: [ 'Settings', 'Log out' ]
+                }
             });
-        });
 
-        $$('users_list').load('data/users.js').then($$('users_chart').load('data/users.js'));
+            webix.protoUI(
+                {
+                    name: 'editlist'
+                },
+                webix.EditAbility,
+                webix.ui.list
+            );
 
-        $$('products_treetable').load('data/products.js').then(function(data) {
-            $$('products_treetable').openAll();
-        });
+            webix.ui({
+                rows: [
+                    header,
+                    {
+                        cols: [ side, resizer, main ]
+                    },
+                    footer
+                ]
+            });
 
-        $$('movies_table').registerFilter(
-            $$('selector'),
-            {
-                columnId: 'year',
-                compare: function(value, filter, item) {
-                    let currentYear = new Date();
-                    if (filter == 2) {
-                        return value <= 1980;
-                    } else if (filter == 3) {
-                        return value > 1980 && value <= 2000;
-                    } else if (filter == 4) {
-                        return value > 2000 && value <= currentYear.getFullYear();
-                    } else {
-                        return value;
+            $$('movies_form').bind($$('movies_table'));
+
+            $$('movies_table').attachEvent('onAfterSelect', function(id) {
+                $$('movies_form').clearValidation();
+            });
+
+            $$('list_input').attachEvent('onTimedKeyPress', function() {
+                let value = this.getValue().toLowerCase();
+                $$('users_list').filter(function(obj) {
+                    return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
+                });
+            });
+
+            $$('users_list').load('data/users.js');
+            $$('users_chart').sync($$('users_list'));
+            // .then(function() {
+            //     if(!grouped)
+            //         $$("users_chart").group({
+            //         by:"year",
+            //         map:{
+            //             age:[ "age", "sum"]
+            //         }
+            //         });
+            //     else
+            //         $$("users_chart").ungroup();
+
+            //     grouped = !grouped;
+            // })
+
+            $$('products_treetable').load('data/products.js').then(function(data) {
+                $$('products_treetable').openAll();
+            });
+
+            $$('movies_table').registerFilter(
+                $$('selector'),
+                {
+                    columnId: 'year',
+                    compare: function(value, filter, item) {
+                        let currentYear = new Date();
+                        if (filter == 2) {
+                            return value <= 1980;
+                        } else if (filter == 3) {
+                            return value > 1980 && value <= 2000;
+                        } else if (filter == 4) {
+                            return value > 2000 && value <= currentYear.getFullYear();
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    getValue: function(node) {
+                        return node.getValue();
+                    },
+                    setValue: function(node, value) {
+                        node.setValue(value);
                     }
                 }
-            },
-            {
-                getValue: function(node) {
-                    return node.getValue();
-                },
-                setValue: function(node, value) {
-                    node.setValue(value);
-                }
-            }
-        );
+            );
+        });
 
         // Functions
 
