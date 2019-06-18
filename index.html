@@ -348,7 +348,7 @@
                 title: 'Country',
                 template: '#id#'
             },
-            yAxis:{}
+            yAxis: {}
         };
 
         let tree = {
@@ -446,14 +446,14 @@
             });
 
             $$('users_list').load('data/users.js');
-            $$('users_chart').sync($$('users_list'), function(){
+            $$('users_chart').sync($$('users_list'), function() {
                 this.group({
-                    by:"country",
-                    map:{
-                        age:[ "age", "sum" ]
+                    by: 'country',
+                    map: {
+                        age: [ 'age', getCountUsers ]
                     }
                 });
-            })
+            });
 
             $$('products_treetable').load('data/products.js').then(function(data) {
                 $$('products_treetable').openAll();
@@ -499,6 +499,15 @@
 
         function getRandomNumber(maxValue) {
             return Math.floor(Math.random() * maxValue);
+        }
+
+        function getCountUsers(prop, data) {
+            if (!data.length) return 0;
+            let count = 0;
+            for (let i = data.length - 1; i >= 0; i--) {
+                if (data[i].country) count += 1;
+            }
+            return count;
         }
 
       </script>
