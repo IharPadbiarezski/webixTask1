@@ -60,7 +60,13 @@
     <script type="module" charset="utf-8">
         import { small_film_set } from './data/testdata.js';
 
-        let grouped;
+        let categoriesCollection = new webix.DataCollection({
+            url: 'data/categories.js'
+        });
+
+        let usersCollection = new webix.DataCollection({
+            url: 'data/users.js'
+        });
 
         let names = [ 'Ihar', 'Masha', 'Michael', 'Tom', 'Donald', 'Mary', 'Vika', 'Serg', 'Toha', 'Katya' ];
         let countries = [ 'Germany', 'USA', 'Canada', 'Russia', 'China', 'France', 'Belarus', 'Italy', 'Spain', 'Chile' ];
@@ -104,7 +110,7 @@
                             $$(id).show();
                         }
                     },
-                    data: [ 'Dashboard', 'Users', 'Products', 'Locations' ]
+                    data: [ 'Dashboard', 'Users', 'Products', 'Admin' ]
                 },
                 {},
                 {
@@ -152,7 +158,7 @@
                 {
                     id: 'categoryId',
                     header: [ 'Cadegory', { content: 'selectFilter' } ],
-                    collection: 'data/categories.js',
+                    collection: categoriesCollection,
                     sort: 'string'
                 },
                 { id: 'year', header: [ 'Released' ] },
@@ -365,12 +371,94 @@
             }
         };
 
+        let categoriesTable = {
+            view: 'datatable',
+            id: 'categories_table',
+            scroll: 'y',
+            editable: true,
+            select: true,
+            hover: 'moviestable-row-hoverbg',
+            css: 'movies-table',
+            columns: [
+                { id: 'id', header: '', css: 'rank', width: 50, sort: 'int' },
+                { id: 'value', header: [ 'Category', { content: 'textFilter' } ], editor: 'text', fillspace: true, sort: 'string' },
+                {
+                    id: '',
+                    template: "<span class='webix_icon wxi-trash delicon'></span>",
+                    css: 'delbtn',
+                    width: 100
+                }
+            ],
+            onClick: {
+                delicon: function(e, id, trg) {
+                    webix
+                        .confirm({
+                            text: 'Are you sure you want to remove the movie?'
+                        })
+                        .then(
+                            function() {
+                                $$('categories_table').remove(id);
+                            },
+                            function() {
+                                webix.message('Rejected');
+                            }
+                        );
+                    return false;
+                }
+            }
+        }
+
+        let categoriesForm = {
+            view: 'form',
+            id: 'categories_form',
+            gravity: 0.5,
+            elements: [
+                { type: 'section', template: 'Icon buttons', borderless: true },
+                { view: 'text', name: 'value', label: 'Category', invalidMessage: 'Please, enter the name of a movie' },
+                {
+                view: 'button',
+                css: 'webix_primary',
+                value: 'Add New',
+                click: function() {
+                    let form = $$('categories_form');
+                    if (form.isDirty()) {
+                        if (!form.validate()) return false;
+                        form.save();
+                    }
+                }
+            },
+            {
+                view: 'button',
+                value: 'Clear',
+                click: function() {
+                    webix
+                        .confirm({
+                            text: 'Are you sure you want to clean the form?'
+                        })
+                        .then(
+                            function() {
+                                $$('categories_form').clearValidation();
+                                $$('categories_form').clear();
+                            },
+                            function() {
+                                webix.message('Rejected');
+                            }
+                        );
+                }
+            },
+            {}
+            ],
+            rules: {
+                value: webix.rules.isNotEmpty
+            }
+        }
+
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ { gravity: 3, rows: [ moviesTabbar, moviesTable ] }, form ] },
                 { id: 'Users', rows: [ usersToolbar, users, chart ] },
                 { id: 'Products', rows: [ tree ] },
-                { id: 'Admin', template: 'Admin View' }
+                { id: 'Admin', cols: [categoriesTable, categoriesForm] }
             ]
         };
 
@@ -414,6 +502,7 @@
         });
 
         $$('movies_form').bind($$('movies_table'));
+        $$('categories_form').bind($$('categories_table'));
 
         $$('movies_table').attachEvent('onAfterSelect', function(id) {
             $$('movies_form').clearValidation();
@@ -466,6 +555,8 @@
                 }
             }
         );
+
+        $$('categories_table').sync(categoriesCollection);
 
         // Functions
 
