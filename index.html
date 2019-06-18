@@ -247,6 +247,7 @@
                 },
                 { view: 'text', name: 'rating', label: 'Rating', invalidMessage: 'Enter rating can not be empty or 0' },
                 { view: 'text', name: 'votes', label: 'Votes', invalidMessage: 'Enter vote must be less than 100000' },
+                { view: 'richselect', name: 'categoryId', label: 'Category', options: categoriesCollection },
                 { margin: '20', cols: webix.copy(buttons) },
                 {}
             ],
@@ -376,12 +377,13 @@
             id: 'categories_table',
             scroll: 'y',
             editable: true,
+            editaction: 'dblclick',
             select: true,
             hover: 'moviestable-row-hoverbg',
             css: 'movies-table',
             columns: [
                 { id: 'id', header: '', css: 'rank', width: 50, sort: 'int' },
-                { id: 'value', header: [ 'Category', { content: 'textFilter' } ], editor: 'text', fillspace: true, sort: 'string' },
+                { id: 'value', header: 'Category', editor: 'text', fillspace: true, sort: 'string' },
                 {
                     id: '',
                     template: "<span class='webix_icon wxi-trash delicon'></span>",
@@ -397,7 +399,7 @@
                         })
                         .then(
                             function() {
-                                $$('categories_table').remove(id);
+                                categoriesCollection.remove(id);
                             },
                             function() {
                                 webix.message('Rejected');
@@ -406,7 +408,7 @@
                     return false;
                 }
             }
-        }
+        };
 
         let categoriesForm = {
             view: 'form',
@@ -416,49 +418,48 @@
                 { type: 'section', template: 'Icon buttons', borderless: true },
                 { view: 'text', name: 'value', label: 'Category', invalidMessage: 'Please, enter the name of a movie' },
                 {
-                view: 'button',
-                css: 'webix_primary',
-                value: 'Add New',
-                click: function() {
-                    let form = $$('categories_form');
-                    if (form.isDirty()) {
-                        if (!form.validate()) return false;
-                        form.save();
+                    view: 'button',
+                    css: 'webix_primary',
+                    value: 'Add New',
+                    click: function() {
+                        if ($$('categories_form').validate()) {
+                            save_row();
+                        }
                     }
-                }
-            },
-            {
-                view: 'button',
-                value: 'Clear',
-                click: function() {
-                    webix
-                        .confirm({
-                            text: 'Are you sure you want to clean the form?'
-                        })
-                        .then(
-                            function() {
-                                $$('categories_form').clearValidation();
-                                $$('categories_form').clear();
-                            },
-                            function() {
-                                webix.message('Rejected');
-                            }
-                        );
-                }
-            },
-            {}
+                },
+                {
+                    view: 'button',
+                    value: 'Clear',
+                    click: function() {
+                        webix
+                            .confirm({
+                                text: 'Are you sure you want to clean the form?'
+                            })
+                            .then(
+                                function() {
+                                    $$('categories_table').unselect();
+                                    $$('categories_form').clearValidation();
+                                    $$('categories_form').clear();
+                                },
+                                function() {
+                                    webix.message('Rejected');
+                                }
+                            );
+                    }
+                },
+                {}
             ],
             rules: {
                 value: webix.rules.isNotEmpty
             }
-        }
+        };
 
         let main = {
             cells: [
                 { id: 'Dashboard', cols: [ { gravity: 3, rows: [ moviesTabbar, moviesTable ] }, form ] },
                 { id: 'Users', rows: [ usersToolbar, users, chart ] },
                 { id: 'Products', rows: [ tree ] },
-                { id: 'Admin', cols: [categoriesTable, categoriesForm] }
+                { id: 'Admin', cols: [ categoriesTable, categoriesForm ] }
             ]
         };
 
@@ -502,7 +503,6 @@
         });
 
         $$('movies_form').bind($$('movies_table'));
-        $$('categories_form').bind($$('categories_table'));
 
         $$('movies_table').attachEvent('onAfterSelect', function(id) {
             $$('movies_form').clearValidation();
@@ -558,6 +558,12 @@
 
         $$('categories_table').sync(categoriesCollection);
 
+        $$('categories_table').attachEvent('onAfterSelect', function(id) {
+            const item = $$('categories_table').getItem(id);
+            $$('categories_form').setValues(item);
+            $$('categories_form').clearValidation();
+        });
+
         // Functions
 
         function sortNameAsc() {
@@ -570,6 +576,17 @@
 
         function getRandomNumber(maxValue) {
             return Math.floor(Math.random() * maxValue);
+        }
+
+        function save_row() {
+            const values = $$('categories_form').getValues();
+            if (values.id) {
+                $$('categories_table').updateItem(values.id, values);
+                webix.message({ type: 'success', text: 'The movie is updated' });
+            } else {
+                categoriesCollection.add(values);
+                webix.message({ type: 'success', text: 'The movie is added' });
+            }
         }
 
       </script>
