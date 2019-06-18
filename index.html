@@ -67,18 +67,6 @@
 
         let categoriesAll = [];
 
-        webix
-            .ajax()
-            .get('data/categories.js')
-            .then(function(data) {
-                return data.json();
-            })
-            .then((categories) => {
-                categories.forEach(function(category) {
-                    categoriesAll.push({ id: category.id, value: category.value });
-                });
-            });
-
         let header = {
             view: 'toolbar',
             height: 70,
@@ -403,89 +391,100 @@
 
         // Webix
 
-        webix.ready(function() {
-            webix.ui({
-                view: 'popup',
-                id: 'profile_popup',
-                body: {
-                    view: 'list',
-                    autoheight: true,
-                    data: [ 'Settings', 'Log out' ]
-                }
-            });
-
-            webix.protoUI(
-                {
-                    name: 'editlist'
-                },
-                webix.EditAbility,
-                webix.ui.list
-            );
-
-            webix.ui({
-                rows: [
-                    header,
-                    {
-                        cols: [ side, resizer, main ]
-                    },
-                    footer
-                ]
-            });
-
-            $$('movies_form').bind($$('movies_table'));
-
-            $$('movies_table').attachEvent('onAfterSelect', function(id) {
-                $$('movies_form').clearValidation();
-            });
-
-            $$('list_input').attachEvent('onTimedKeyPress', function() {
-                let value = this.getValue().toLowerCase();
-                $$('users_list').filter(function(obj) {
-                    return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
+        webix
+            .ajax()
+            .get('data/categories.js')
+            .then(function(data) {
+                return data.json();
+            })
+            .then((categories) => {
+                categories.forEach(function(category) {
+                    categoriesAll.push({ id: category.id, value: category.value });
                 });
-            });
-
-            $$('users_list').load('data/users.js');
-            $$('users_chart').sync($$('users_list'), function() {
-                this.group({
-                    by: 'country',
-                    map: {
-                        age: [ 'age', getCountUsers ]
+            })
+            .then(function() {
+                webix.ui({
+                    view: 'popup',
+                    id: 'profile_popup',
+                    body: {
+                        view: 'list',
+                        autoheight: true,
+                        data: [ 'Settings', 'Log out' ]
                     }
                 });
-            });
 
-            $$('products_treetable').load('data/products.js').then(function(data) {
-                $$('products_treetable').openAll();
-            });
+                webix.protoUI(
+                    {
+                        name: 'editlist'
+                    },
+                    webix.EditAbility,
+                    webix.ui.list
+                );
 
-            $$('movies_table').registerFilter(
-                $$('selector'),
-                {
-                    columnId: 'year',
-                    compare: function(value, filter, item) {
-                        let currentYear = new Date();
-                        if (filter == 2) {
-                            return value <= 1980;
-                        } else if (filter == 3) {
-                            return value > 1980 && value <= 2000;
-                        } else if (filter == 4) {
-                            return value > 2000 && value <= currentYear.getFullYear();
-                        } else {
-                            return value;
+                webix.ui({
+                    rows: [
+                        header,
+                        {
+                            cols: [ side, resizer, main ]
+                        },
+                        footer
+                    ]
+                });
+
+                $$('movies_form').bind($$('movies_table'));
+
+                $$('movies_table').attachEvent('onAfterSelect', function(id) {
+                    $$('movies_form').clearValidation();
+                });
+
+                $$('list_input').attachEvent('onTimedKeyPress', function() {
+                    let value = this.getValue().toLowerCase();
+                    $$('users_list').filter(function(obj) {
+                        return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
+                    });
+                });
+
+                $$('users_list').load('data/users.js');
+                $$('users_chart').sync($$('users_list'), function() {
+                    this.group({
+                        by: 'country',
+                        map: {
+                            age: [ 'age', getCountUsers ]
+                        }
+                    });
+                });
+
+                $$('products_treetable').load('data/products.js').then(function(data) {
+                    $$('products_treetable').openAll();
+                });
+
+                $$('movies_table').registerFilter(
+                    $$('selector'),
+                    {
+                        columnId: 'year',
+                        compare: function(value, filter, item) {
+                            let currentYear = new Date();
+                            if (filter == 2) {
+                                return value <= 1980;
+                            } else if (filter == 3) {
+                                return value > 1980 && value <= 2000;
+                            } else if (filter == 4) {
+                                return value > 2000 && value <= currentYear.getFullYear();
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
+                    {
+                        getValue: function(node) {
+                            return node.getValue();
+                        },
+                        setValue: function(node, value) {
+                            node.setValue(value);
                         }
                     }
-                },
-                {
-                    getValue: function(node) {
-                        return node.getValue();
-                    },
-                    setValue: function(node, value) {
-                        node.setValue(value);
-                    }
-                }
-            );
-        });
+                );
+            });
 
         // Functions
 
