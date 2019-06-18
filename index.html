@@ -152,7 +152,7 @@
                 {
                     id: 'categoryId',
                     header: [ 'Cadegory', { content: 'selectFilter' } ],
-                    collection: categoriesAll,
+                    collection: 'data/categories.js',
                     sort: 'string'
                 },
                 { id: 'year', header: [ 'Released' ] },
@@ -296,12 +296,6 @@
             editValue: 'name',
             scheme: {
                 $init: function(obj) {
-                    if (obj.id < 6) obj.$css = 'user-list-bg';
-
-                    if (obj.$css) {
-                        obj.$css = '';
-                    }
-
                     if (obj.age < 26) obj.$css = 'user-list-newbg';
                 }
             },
@@ -391,100 +385,87 @@
 
         // Webix
 
-        webix
-            .ajax()
-            .get('data/categories.js')
-            .then(function(data) {
-                return data.json();
-            })
-            .then((categories) => {
-                categories.forEach(function(category) {
-                    categoriesAll.push({ id: category.id, value: category.value });
-                });
-            })
-            .then(function() {
-                webix.ui({
-                    view: 'popup',
-                    id: 'profile_popup',
-                    body: {
-                        view: 'list',
-                        autoheight: true,
-                        data: [ 'Settings', 'Log out' ]
-                    }
-                });
+        webix.ui({
+            view: 'popup',
+            id: 'profile_popup',
+            body: {
+                view: 'list',
+                autoheight: true,
+                data: [ 'Settings', 'Log out' ]
+            }
+        });
 
-                webix.protoUI(
-                    {
-                        name: 'editlist'
-                    },
-                    webix.EditAbility,
-                    webix.ui.list
-                );
+        webix.protoUI(
+            {
+                name: 'editlist'
+            },
+            webix.EditAbility,
+            webix.ui.list
+        );
 
-                webix.ui({
-                    rows: [
-                        header,
-                        {
-                            cols: [ side, resizer, main ]
-                        },
-                        footer
-                    ]
-                });
+        webix.ui({
+            rows: [
+                header,
+                {
+                    cols: [ side, resizer, main ]
+                },
+                footer
+            ]
+        });
 
-                $$('movies_form').bind($$('movies_table'));
+        $$('movies_form').bind($$('movies_table'));
 
-                $$('movies_table').attachEvent('onAfterSelect', function(id) {
-                    $$('movies_form').clearValidation();
-                });
+        $$('movies_table').attachEvent('onAfterSelect', function(id) {
+            $$('movies_form').clearValidation();
+        });
 
-                $$('list_input').attachEvent('onTimedKeyPress', function() {
-                    let value = this.getValue().toLowerCase();
-                    $$('users_list').filter(function(obj) {
-                        return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
-                    });
-                });
-
-                $$('users_list').load('data/users.js');
-                $$('users_chart').sync($$('users_list'), function() {
-                    this.group({
-                        by: 'country',
-                        map: {
-                            age: [ 'age', getCountUsers ]
-                        }
-                    });
-                });
-
-                $$('products_treetable').load('data/products.js').then(function(data) {
-                    $$('products_treetable').openAll();
-                });
-
-                $$('movies_table').registerFilter(
-                    $$('selector'),
-                    {
-                        columnId: 'year',
-                        compare: function(value, filter, item) {
-                            let currentYear = new Date();
-                            if (filter == 2) {
-                                return value <= 1980;
-                            } else if (filter == 3) {
-                                return value > 1980 && value <= 2000;
-                            } else if (filter == 4) {
-                                return value > 2000 && value <= currentYear.getFullYear();
-                            } else {
-                                return value;
-                            }
-                        }
-                    },
-                    {
-                        getValue: function(node) {
-                            return node.getValue();
-                        },
-                        setValue: function(node, value) {
-                            node.setValue(value);
-                        }
-                    }
-                );
+        $$('list_input').attachEvent('onTimedKeyPress', function() {
+            let value = this.getValue().toLowerCase();
+            $$('users_list').filter(function(obj) {
+                return obj.name.toLowerCase().indexOf(value) !== -1 || obj.country.toLowerCase().indexOf(value) !== -1;
             });
+        });
+
+        $$('users_list').load('data/users.js');
+        $$('users_chart').sync($$('users_list'), function() {
+            this.group({
+                by: 'country',
+                map: {
+                    age: [ 'age', 'count' ]
+                }
+            });
+        });
+
+        $$('products_treetable').load('data/products.js').then(function(data) {
+            $$('products_treetable').openAll();
+        });
+
+        $$('movies_table').registerFilter(
+            $$('selector'),
+            {
+                columnId: 'year',
+                compare: function(value, filter, item) {
+                    let currentYear = new Date();
+                    if (filter == 2) {
+                        return value <= 1980;
+                    } else if (filter == 3) {
+                        return value > 1980 && value <= 2000;
+                    } else if (filter == 4) {
+                        return value > 2000 && value <= currentYear.getFullYear();
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
+                getValue: function(node) {
+                    return node.getValue();
+                },
+                setValue: function(node, value) {
+                    node.setValue(value);
+                }
+            }
+        );
 
         // Functions
 
@@ -498,15 +479,6 @@
 
         function getRandomNumber(maxValue) {
             return Math.floor(Math.random() * maxValue);
-        }
-
-        function getCountUsers(prop, data) {
-            if (!data.length) return 0;
-            let count = 0;
-            for (let i = data.length - 1; i >= 0; i--) {
-                if (data[i].country) count += 1;
-            }
-            return count;
         }
 
       </script>
