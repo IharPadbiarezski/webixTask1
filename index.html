@@ -291,25 +291,8 @@
                         const posName = getRandomNumber(10);
                         const posCountry = getRandomNumber(10);
                         const age = getRandomNumber(80);
-                        console.table([ names[posName], countries[posCountry], age ]);
 
                         $$('users_list').add({ name: names[posName], age: age, country: countries[posCountry] });
-                    }
-                },
-                {
-                    view: 'button',
-                    value: 'Group',
-                    click: function() {
-                        if (!grouped)
-                            $$('users_chart').group({
-                                by: 'country',
-                                map: {
-                                    country: [ 'country', 'sum' ]
-                                }
-                            });
-                        else $$('users_chart').ungroup();
-
-                        grouped = !grouped;
                     }
                 }
             ]
@@ -362,17 +345,10 @@
             type: 'bar',
             value: '#age#',
             xAxis: {
-                title: 'Age',
-                template: '#age#'
-            }
-            // scheme: {
-            //     $group: {
-            //         by: "country",
-            //         map: {
-            //             "country": ["country", "sum"]
-            //         }
-            //     }
-            // }
+                title: 'Country',
+                template: '#id#'
+            },
+            yAxis:{}
         };
 
         let tree = {
@@ -470,20 +446,14 @@
             });
 
             $$('users_list').load('data/users.js');
-            $$('users_chart').sync($$('users_list'));
-            // .then(function() {
-            //     if(!grouped)
-            //         $$("users_chart").group({
-            //         by:"year",
-            //         map:{
-            //             age:[ "age", "sum"]
-            //         }
-            //         });
-            //     else
-            //         $$("users_chart").ungroup();
-
-            //     grouped = !grouped;
-            // })
+            $$('users_chart').sync($$('users_list'), function(){
+                this.group({
+                    by:"country",
+                    map:{
+                        age:[ "age", "sum" ]
+                    }
+                });
+            })
 
             $$('products_treetable').load('data/products.js').then(function(data) {
                 $$('products_treetable').openAll();
