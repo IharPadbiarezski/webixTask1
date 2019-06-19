@@ -395,10 +395,11 @@
                 delicon: function(e, id, trg) {
                     webix
                         .confirm({
-                            text: 'Are you sure you want to remove the movie?'
+                            text: 'Are you sure you want to remove the category?'
                         })
                         .then(
                             function() {
+                                $$('categories_form').clear();
                                 categoriesCollection.remove(id);
                             },
                             function() {
@@ -415,12 +416,11 @@
             id: 'categories_form',
             gravity: 0.5,
             elements: [
-                { type: 'section', template: 'Icon buttons', borderless: true },
                 { view: 'text', name: 'value', label: 'Category', invalidMessage: 'Please, enter the name of a movie' },
                 {
                     view: 'button',
                     css: 'webix_primary',
-                    value: 'Add New',
+                    value: 'Save',
                     click: function() {
                         if ($$('categories_form').validate()) {
                             save_row();
