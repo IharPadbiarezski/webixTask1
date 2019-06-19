@@ -568,10 +568,12 @@
 
         function sortNameAsc() {
             $$('users_list').sort('#name#', 'asc');
+            $$('users_chart').sort('#country#', 'asc');
         }
 
         function sortNameDesc() {
             $$('users_list').sort('#name#', 'desc');
+            $$('users_chart').sort('#country#', 'desc');
         }
 
         function getRandomNumber(maxValue) {
