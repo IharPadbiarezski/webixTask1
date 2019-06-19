@@ -287,7 +287,7 @@
                         const posCountry = getRandomNumber(10);
                         const age = getRandomNumber(80);
 
-                        $$('users_list').add({ name: names[posName], age: age, country: countries[posCountry] });
+                        usersCollection.add({ name: names[posName], age: age, country: countries[posCountry] });
                     }
                 }
             ]
@@ -314,7 +314,7 @@
                         })
                         .then(
                             function() {
-                                $$('users_list').remove(id);
+                                usersCollection.remove(id);
                             },
                             function() {
                                 webix.message('Rejected');
@@ -515,8 +515,8 @@
             });
         });
 
-        $$('users_list').load('data/users.js');
-        $$('users_chart').sync($$('users_list'), function() {
+        $$('users_list').sync(usersCollection);
+        $$('users_chart').sync(usersCollection, function() {
             this.group({
                 by: 'country',
                 map: {
